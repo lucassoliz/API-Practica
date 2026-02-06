@@ -1,6 +1,7 @@
 
 package com.consultora.turnos.controller;
 
+import com.consultora.turnos.dto.TurnoDTO;
 import com.consultora.turnos.model.Turno;
 import com.consultora.turnos.service.ITurnoService;
 import java.time.LocalDate;
@@ -24,10 +25,8 @@ public class Controller {
     
     //1 - crear un nuevo turno
     @PostMapping("/crear")
-    public String crearTurno (@RequestBody LocalDate fecha,
-                              @RequestBody String tratamiento,
-                              @RequestBody String dniPaciente){
-        turnoServ.saveTurno(fecha, tratamiento, dniPaciente);
+    public String crearTurno (@RequestBody TurnoDTO turno){
+        turnoServ.saveTurno(turno.getFecha(), turno.getTratamiento(), turno.getDniPaciente());
         
         return "Turno creado correctamente";
     }

@@ -41,4 +41,17 @@ public class UserSec {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> rolesList = new HashSet<>();
+
+    public boolean isAccountNotExpired() {
+        return accountNonExpired;
+    }
+
+    public boolean isCredentialNotExpired() {
+        return credentialsNonExpired;
+    }
+
+    public boolean isAccountNotLocked() {
+        return accountNonLocked;
+    }
+
 }

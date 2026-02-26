@@ -44,12 +44,16 @@ public class SecurityConfig {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
-
+// AuthenticationProvider es el que se encarga de autenticar al usuario, en este caso, vamos a usar
+// DaoAuthenticationProvider que es el que se encarga de autenticar con una base de datos, pero como
+// no tenemos una base de datos, vamos a usar un InMemoryUserDetailsManager que es el que se encarga
+// de manejar los usuarios en memoria, y le vamos a pasar la lista de usuarios que tenemos en el
+// metodo userDetailsService
     @Bean
-    public AuthenticationProvider authenticationProvider(){
+    public AuthenticationProvider authenticationProvider(UserDetailsService userDetailsService) {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setPasswordEncoder(passwordEncoder());
-        provider.setUserDetailsService(userDetailsService());
+        provider.setUserDetailsService(userDetailsService);
         return provider;
     }
 
@@ -60,7 +64,7 @@ public class SecurityConfig {
     }
 
 
-    @Bean
+    /*@Bean
     public UserDetailsService userDetailsService () {
         List userDetailsList = new ArrayList<>();
 
@@ -83,7 +87,7 @@ public class SecurityConfig {
                 .build());
 
         return new InMemoryUserDetailsManager(userDetailsList);
-    }
+    }*/
 
 
 }

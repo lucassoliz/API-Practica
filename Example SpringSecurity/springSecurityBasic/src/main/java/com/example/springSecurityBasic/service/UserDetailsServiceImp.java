@@ -21,6 +21,9 @@ public class UserDetailsServiceImp implements UserDetailsService {
     @Autowired
     private IUserRepository userRepo;
 
+//Este método es el que se encarga de cargar el usuario por su username, lo que hace es traer el usuario de la base de
+// datos y convertirlo en un UserDetails para que Spring Security pueda manejarlo
+
     @Override
     public UserDetails loadUserByUsername (String username) throws UsernameNotFoundException {
 
@@ -39,12 +42,14 @@ public class UserDetailsServiceImp implements UserDetailsService {
 
 
         //ahora tenemos que agregar los permisos
+        //usamos stream para recorrer los roles y luego los permisos de cada rol, y agregarlos a la authorityList
+        //flatMap para recorrer los permisos de cada rol, y luego forEach para agregarlos a la authorityList
         userSec.getRolesList().stream()
                 .flatMap(role -> role.getPermissionsList().stream()) //acá recorro los permisos de los roles
                 .forEach(permission -> authorityList.add(new SimpleGrantedAuthority(permission.getPermissionName())));
 
         //retornamos el usuario en formato Spring Security con los datos de nuestro userSec
-        return new User(userSec.getUsername(),
+        return new User(userSec.getUsername(), //user es la clase de Spring Security que implementa UserDetails, por eso podemos retornar un new User
                 userSec.getPassword(),
                 userSec.isEnabled(),
                 userSec.isAccountNotExpired(),

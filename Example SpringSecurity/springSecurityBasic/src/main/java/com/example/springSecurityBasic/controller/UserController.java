@@ -6,6 +6,7 @@ import com.example.springSecurityBasic.model.UserSec;
 import com.example.springSecurityBasic.service.IRoleService;
 import com.example.springSecurityBasic.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,11 +37,15 @@ public class UserController {
         return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @Bean
     @PostMapping
-    public ResponseEntity<UserSec> createUser(@RequestBody UserSec userSec) {
+    public ResponseEntity createUser(@RequestBody UserSec userSec) {
 
-        Set<Role> roleList = new HashSet<>();
+        Set roleList = new HashSet();
         Role readRole;
+
+        //encriptamos contraseña
+        userSec.setPassword(userService.encriptPassword(userSec.getPassword()));
 
         // Recuperar la Permission/s por su ID
         for (Role role : userSec.getRolesList()){
@@ -59,5 +64,5 @@ public class UserController {
         }
         return null;
     }
-}
+
 

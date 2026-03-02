@@ -48,7 +48,7 @@ public class UserController {
         userSec.setPassword(userService.encriptPassword(userSec.getPassword()));
 
         // Recuperar la Permission/s por su ID
-        for (Role role : userSec.getRolesList()){
+        for (Role role : userSec.getRolesList()) {
             readRole = roleService.findById(role.getId()).orElse(null);
             if (readRole != null) {
                 //si encuentro, guardo en la lista
@@ -64,5 +64,6 @@ public class UserController {
         }
         return null;
     }
+}
 
 

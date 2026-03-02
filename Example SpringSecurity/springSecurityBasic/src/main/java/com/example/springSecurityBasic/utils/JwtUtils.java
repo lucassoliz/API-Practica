@@ -2,6 +2,9 @@ package com.example.springSecurityBasic.utils;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.interfaces.DecodedJWT;
+import com.auth0.jwt.interfaces.JWTVerifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -50,5 +53,28 @@ public class JwtUtils {
 
         return jwtToken;
     }
+//===========================================================================
+//metodo para decodificar y validar el token, que va a ser el que se use en el filtro de seguridad
+// para validar el token que viene en la petición
+public DecodedJWT validateToken(String token) {
+
+    try {
+        Algorithm algorithm = Algorithm.HMAC256(this.privateKey); //algoritmo + clave privada para validar el token, que es el mismo que se usó para generarlo
+        JWTVerifier verifier = JWT.require(algorithm)
+                .withIssuer(this.userGenerator)
+                .build(); //usa patrón builder para crear el verificador, con el algoritmo y el issuer que definimos, que es el mismo que se usó para generar el token
+
+        //si esta toodo ok, no genera excepción y hace el return del token decodificado, que es un objeto de
+        // tipo DecodedJWT, que tiene toda la información del token, como el subject, los claims, etc
+        DecodedJWT decodedJWT = verifier.verify(token);
+        return decodedJWT;
+    }
+    catch (JWTVerificationException exception) {
+        throw new JWTVerificationException("Invalid token. Not authorized");
+    }
+}
+
+
+
 
 }

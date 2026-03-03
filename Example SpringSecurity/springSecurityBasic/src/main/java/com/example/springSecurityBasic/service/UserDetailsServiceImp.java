@@ -12,6 +12,14 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import com.example.springSecurityBasic.dto.AuthResponseDTO;
+import com.example.springSecurityBasic.utils.JwtUtils;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,8 +29,13 @@ public class UserDetailsServiceImp implements UserDetailsService {
 
     @Autowired
     private IUserRepository userRepo;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
-//Este método es el que se encarga de cargar el usuario por su username, lo que hace es traer el usuario de la base de
+    @Autowired
+    private JwtUtils jwtUtils;
+
+//Este metodo es el que se encarga de cargar el usuario por su username, lo que hace es traer el usuario de la base de
 // datos y convertirlo en un UserDetails para que Spring Security pueda manejarlo
 
     @Override
@@ -59,7 +72,34 @@ public class UserDetailsServiceImp implements UserDetailsService {
                 authorityList);
     }
 
-    public Object loginUser(AuthLoginRequestDTO userRequest) {
+    public AuthResponseDTO loginUser (AuthLoginRequestDTO authLoginRequest){
+
+        //recuperamos nombre de usuario y contraseña
+        String username = authLoginRequest.username();
+        String password = authLoginRequest.password();
+
+        Authentication authentication = this.authenticate (username, password);
+        //si todo sale bien
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        String accessToken = jwtUtils.createToken(authentication);
+        AuthResponseDTO authResponseDTO = new AuthResponseDTO(username, "login ok", accessToken, true);
+        return authResponseDTO;
+
     }
+
+    public Authentication authenticate (String username, String password) {
+        //con esto debo buscar el usuario
+        UserDetails userDetails = this.loadUserByUsername(username);
+
+        if (userDetails == null) {
+            throw new BadCredentialsException("Invalid username or password");
+        }
+        // si no es igual
+        if (!passwordEncoder.matches(password, userDetails.getPassword())) {
+            throw new BadCredentialsException("Invalid password");
+        }
+        return new UsernamePasswordAuthenticationToken(username, userDetails.getPassword(), userDetails.getAuthorities());
+    }
+
 }
 

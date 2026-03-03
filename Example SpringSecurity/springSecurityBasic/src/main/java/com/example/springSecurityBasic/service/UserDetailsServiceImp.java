@@ -1,6 +1,7 @@
 package com.example.springSecurityBasic.service;
 
 
+import com.example.springSecurityBasic.dto.AuthLoginRequestDTO;
 import com.example.springSecurityBasic.model.UserSec;
 import com.example.springSecurityBasic.repository.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,5 +59,7 @@ public class UserDetailsServiceImp implements UserDetailsService {
                 authorityList);
     }
 
+    public Object loginUser(AuthLoginRequestDTO userRequest) {
+    }
 }
 

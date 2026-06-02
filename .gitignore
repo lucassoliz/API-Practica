@@ -1,0 +1,33 @@
+# Maven
+target/
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Eclipse / STS
+.settings/
+.project
+.classpath
+.factorypath
+bin/
+
+# VS Code
+.vscode/
+
+# FastRequest plugin
+.fastRequest/
+
+# Logs
+*.log
+logs/
+
+# Environment
+*.env
+.env
+
+# OS
+.DS_Store
+Thumbs.db
